@@ -133,5 +133,67 @@ class n2HelperTags
 echo '<hr/>'.$query.'<hr/>';
 		return $query;
 	}
+        
+        
+        
+        /**
+	 * Method to get a list of types with associated data.
+	 *
+	 * @param   string   $arrayType    Optionally specify that the returned list consist of objects, associative arrays, or arrays.
+	 *                                 Options are: rowList, assocList, and objectList
+	 * @param   array    $selectTypes  Optional array of type ids to limit the results to. Often from a request.
+	 * @param   boolean  $useAlias     If true, the alias is used to match, if false the type_id is used.
+	 *
+	 * @return  array   Array of of types
+	 *
+	 * @since   3.1
+	 */
+	public static function getTypes($arrayType = 'objectList', $selectTypes = null, $useAlias = true)
+	{
+		// Initialize some variables.
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select('*');
+
+		if (!empty($selectTypes))
+		{
+			$selectTypes = (array) $selectTypes;
+
+			if ($useAlias)
+			{
+				$selectTypes = array_map(array($db, 'quote'), $selectTypes);
+
+				$query->where($db->quoteName('type_alias') . ' IN (' . implode(',', $selectTypes) . ')');
+			}
+			else
+			{
+				JArrayHelper::toInteger($selectTypes);
+
+				$query->where($db->quoteName('type_id') . ' IN (' . implode(',', $selectTypes) . ')');
+			}
+		}
+
+		$query->from($db->quoteName('#__content_types'));
+
+		$db->setQuery($query);
+
+		switch ($arrayType)
+		{
+			case 'assocList':
+				$types = $db->loadAssocList();
+				break;
+
+			case 'rowList':
+				$types = $db->loadRowList();
+				break;
+
+			case 'objectList':
+			default:
+				$types = $db->loadObjectList();
+				break;
+		}
+
+		return $types;
+	}
 
 }
