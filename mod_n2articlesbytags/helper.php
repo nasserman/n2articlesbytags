@@ -63,7 +63,8 @@ abstract class ModN2ArticlesByTagsHelper
                 }
                 //var_dump($_anyorall);
                 
-                $query=$tagsHelper->getTagItemsQuery($tagsToMatch, $typesr = null, $includeChildren = $includechildren, $orderByOption = $params->get('orderbyoption'), $orderDir = $params->get('orderdir'),$anyOrAll = $anyOrAll, $languageFilter = 'all', $stateFilter = '0,1');
+                //$query=$tagsHelper->getTagItemsQuery($tagsToMatch, $typesr = null, $includeChildren = $includechildren, $orderByOption = $params->get('orderbyoption'), $orderDir = $params->get('orderdir'),$anyOrAll = $anyOrAll, $languageFilter = 'all', $stateFilter = '0,1');
+                $query=  n2HelperTags::getTagItemsQuery($tagsToMatch, $typesr = null, $includeChildren = $includechildren, $orderByOption = $params->get('orderbyoption'), $orderDir = $params->get('orderdir'),$anyOrAll = $anyOrAll, $languageFilter = 'all', $stateFilter = '0,1');
                 //echo '<hr/>'.$query.'<hr/>';
                 $db->setQuery($query, 0, $maximum);
                 $results = $db->loadObjectList();
